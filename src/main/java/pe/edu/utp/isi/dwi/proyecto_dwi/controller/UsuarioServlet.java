@@ -67,12 +67,20 @@ public class UsuarioServlet extends HttpServlet {
 
     private void registrarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            // Validar reCAPTCHA
-            String recaptchaResponse = request.getParameter("g-recaptcha-response");
-            if (!SecurityUtils.verificarReCaptcha(recaptchaResponse)) {
-                redirigirConMensaje(request, response, "reCAPTCHA inválido. Por favor, intente nuevamente.", "registro_usuario.jsp");
-                return;
-            }
+        // Obtener la respuesta del reCAPTCHA
+        String recaptchaResponse = request.getParameter("g-recaptcha-response");
+        
+        // Verificar si la respuesta del reCAPTCHA está presente
+        if (recaptchaResponse == null || recaptchaResponse.trim().isEmpty()) {
+            redirigirConMensaje(request, response, "No se recibió respuesta del reCAPTCHA. Por favor, intente nuevamente.", "registro_usuario.jsp");
+            return;
+        }
+
+        // Validar reCAPTCHA
+        if (!SecurityUtils.verificarReCaptcha(recaptchaResponse)) {
+            redirigirConMensaje(request, response, "reCAPTCHA inválido. Por favor, intente nuevamente.", "registro_usuario.jsp");
+            return;
+        }
 
             // Obtener y validar los datos del formulario
             String nombre = request.getParameter("nombre_usuario");

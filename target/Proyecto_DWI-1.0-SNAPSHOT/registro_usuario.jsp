@@ -13,8 +13,17 @@
 
         <!-- Validación de formulario en JavaScript -->
         <script>
+            function validarCaptcha() {
+                const response = grecaptcha.getResponse();
+                if (response.length === 0) {
+                    alert("Por favor, verifica que no eres un robot.");
+                    return false;
+                }
+                return validarFormulario(); // Llama a la función de validación del formulario si el reCAPTCHA es válido
+            }
+
             function validarFormulario() {
-                var contraseña = document.getElementById("contraseña").value;
+                var contraseña = document.getElementById("contrasena").value;
                 var confirmacion = document.getElementById("confirmacion").value;
                 var correo = document.getElementById("correo").value;
                 var cargo = document.getElementById("cargo").value;
@@ -24,10 +33,10 @@
 
                 // Validación de la contraseña
                 if (!regexContraseña.test(contraseña)) {
-                    mostrarError("La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales.", "contraseña");
+                    mostrarError("La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales.", "contrasena");
                     return false;
                 } else {
-                    limpiarError("contraseña");
+                    limpiarError("contrasena");
                 }
 
                 // Confirmación de la contraseña
@@ -72,8 +81,7 @@
                 }
             }
 
-<!-- JavaScript para mostrar/ocultar contraseñas -->
-
+            // JavaScript para mostrar/ocultar contraseñas
             function togglePasswordVisibility() {
                 var passwordField = document.getElementById("contrasena");
                 var passwordToggle = document.getElementById("passwordToggle");
@@ -103,7 +111,7 @@
                     confirmPasswordToggle.classList.remove("fa-eye-slash");
                 }
             }
-</script>
+        </script>
     </head>
     <body class="bg-gray-100">
         <header class="bg-blue-600 p-4 text-white flex justify-between items-center">
@@ -125,109 +133,109 @@
 
             <!-- Mostrar mensaje de error si existe -->
             <% if (request.getAttribute("mensajeError") != null) {%>
-        <p class="text-red-600 text-center mb-4"><%= request.getAttribute("mensajeError")%></p>
-        <% }%>
+            <p class="text-red-600 text-center mb-4"><%= request.getAttribute("mensajeError")%></p>
+            <% }%>
 
-        <form action="${pageContext.request.contextPath}/Usuario?accion=guardar" method="POST" enctype="multipart/form-data" onsubmit="return validarFormulario();">
-            <!-- Input oculto para enviar la acción -->
-            <input type="hidden" name="accion" value="guardar">
-            <!-- Nombre de Usuario -->
-            <div class="mb-4">
-                <label for="nombre_usuario" class="block text-sm font-medium text-gray-700">Nombre:</label>
-                <input type="text" id="nombre_usuario" name="nombre_usuario" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Nombre completo">
-                <span id="error-nombre_usuario" class="text-red-500 text-sm" style="display:none;"></span>
-            </div>
+            <form id="registroForm" action="${pageContext.request.contextPath}/Usuario?accion=guardar" method="POST" enctype="multipart/form-data" onsubmit="return validarCaptcha();">
+                <!-- Input oculto para enviar la acción -->
+                <input type="hidden" name="accion" value="guardar">
 
-            <!-- Apellidos -->
-            <div class="mb-4">
-                <label for="apellidos" class="block text-sm font-medium text-gray-700">Apellidos:</label>
-                <input type="text" id="apellidos" name="apellidos" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Apellidos completos">
-                <span id="error-apellidos" class="text-red-500 text-sm" style="display:none;"></span>
-            </div>
+                <!-- Nombre de Usuario -->
+                <div class="mb-4">
+                    <label for="nombre_usuario" class="block text-sm font-medium text-gray-700">Nombre:</label>
+                    <input type="text" id="nombre_usuario" name="nombre_usuario" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Nombre completo">
+                    <span id="error-nombre_usuario" class="text-red-500 text-sm" style="display:none;"></span>
+                </div>
 
-            <!-- Correo -->
-            <div class="mb-4">
-                <label for="correo" class="block text-sm font-medium text-gray-700">Correo:</label>
-                <input type="email" id="correo" name="correo" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="example@correo.com">
-                <span id="error-correo" class="text-red-500 text-sm" style="display:none;"></span>
-            </div>
+                <!-- Apellidos -->
+                <div class="mb-4">
+                    <label for="apellidos" class="block text-sm font-medium text-gray-700">Apellidos:</label>
+                    <input type="text" id="apellidos" name="apellidos" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Apellidos completos">
+                    <span id="error-apellidos" class="text-red-500 text-sm" style="display:none;"></span>
+                </div>
 
-            <!-- Contraseña -->
-            <div class="mb-4 relative">
-                <label for="contrasena" class="block text-sm font-medium text-gray-700">Contraseña:</label>
-                <input type="password" id="contrasena" name="contrasena" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="********">
-                <i id="passwordToggle" class="fa fa-eye text-blue-500 cursor-pointer absolute right-4 top-9" onclick="togglePasswordVisibility()"></i>
-                <span id="error-contraseña" class="text-red-500 text-sm" style="display:none;"></span>
-            </div>
+                <!-- Correo -->
+                <div class="mb-4">
+                    <label for="correo" class="block text-sm font-medium text-gray-700">Correo:</label>
+                    <input type="email" id="correo" name="correo" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="example@correo.com">
+                    <span id="error-correo" class="text-red-500 text-sm" style="display:none;"></span>
+                </div>
 
-            <!-- Confirmación de Contraseña -->
-            <div class="mb-4 relative">
-                <label for="confirmacion" class="block text-sm font-medium text-gray-700">Confirmar Contraseña:</label>
-                <input type="password" id="confirmacion" name="confirmacion" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="********">
-                <i id="confirmPasswordToggle" class="fa fa-eye text-blue-500 cursor-pointer absolute right-4 top-9" onclick="togglePasswordVisibilityConfirm()"></i>
-                <span id="error-confirmacion" class="text-red-500 text-sm" style="display:none;"></span>
-            </div>
+                <!-- Contraseña -->
+                <div class="mb-4 relative">
+                    <label for="contrasena" class="block text-sm font-medium text-gray-700">Contraseña:</label>
+                    <input type="password" id="contrasena" name="contrasena" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="********">
+                    <i id="passwordToggle" class="fa fa-eye text-blue-500 cursor-pointer absolute right-4 top-9" onclick="togglePasswordVisibility()"></i>
+                    <span id="error-contrasena" class="text-red-500 text-sm" style="display:none;"></span>
+                </div>
 
-            <!-- Teléfono -->
-            <div class="mb-4">
-                <label for="telefono" class="block text-sm font-medium text-gray-700">Número de Teléfono:</label>
-                <input type="text" id="telefono" name="telefono" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Número de teléfono">
-            </div>
+                <!-- Confirmación de Contraseña -->
+                <div class="mb-4 relative">
+                    <label for="confirmacion" class="block text-sm font-medium text-gray-700">Confirmar Contraseña:</label>
+                    <input type="password" id="confirmacion" name="confirmacion" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="********">
+                    <i id="confirmPasswordToggle" class="fa fa-eye text-blue-500 cursor-pointer absolute right-4 top-9" onclick="togglePasswordVisibilityConfirm()"></i>
+                    <span id="error-confirmacion" class="text-red-500 text-sm" style="display:none;"></span>
+                </div>
 
-            <!-- Dirección -->
-            <div class="mb-4">
-                <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección:</label>
-                <input type="text" id="direccion" name="direccion" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Dirección completa">
-            </div>
+                <!-- Teléfono -->
+                <div class="mb-4">
+                    <label for="telefono" class="block text-sm font-medium text-gray-700">Número de Teléfono:</label>
+                    <input type="text" id="telefono" name="telefono" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Número de teléfono">
+                </div>
 
-            <!-- Fecha de Nacimiento -->
-            <div class="mb-4">
-                <label for="fecha_nacimiento" class="block text-sm font-medium text-gray-700">Fecha de Nacimiento:</label>
-                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-            </div>
+                <!-- Dirección -->
+                <div class="mb-4">
+                    <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección:</label>
+                    <input type="text" id="direccion" name="direccion" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Dirección completa">
+                </div>
 
-            <!-- Foto de Perfil -->
-            <div class="mb-4">
-                <label for="foto_perfil" class="block text-sm font-medium text-gray-700">Foto de Perfil:</label>
-                <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-            </div>
+                <!-- Fecha de Nacimiento -->
+                <div class="mb-4">
+                    <label for="fecha_nacimiento" class="block text-sm font-medium text-gray-700">Fecha de Nacimiento:</label>
+                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
 
-            <!-- Departamento/Área -->
-            <div class="mb-4">
-                <label for="departamento" class="block text-sm font-medium text-gray-700">Departamento/Área:</label>
-                <input type="text" id="departamento" name="departamento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Departamento o Área">
-            </div>
+                <!-- Foto de Perfil -->
+                <div class="mb-4">
+                    <label for="foto_perfil" class="block text-sm font-medium text-gray-700">Foto de Perfil:</label>
+                    <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
 
-            <!-- DNI -->
-            <div class="mb-4">
-                <label for="dni" class="block text-sm font-medium text-gray-700">DNI:</label>
-                <input type="text" id="dni" name="dni" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="DNI o Identificación">
-            </div>
+                <!-- Departamento/Área -->
+                <div class="mb-4">
+                    <label for="departamento" class="block text-sm font-medium text-gray-700">Departamento/Área:</label>
+                    <input type="text" id="departamento" name="departamento" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="Departamento o Área">
+                </div>
 
-            <!-- Cargo -->
-            <div class="mb-4">
-                <label for="cargo" class="block text-sm font-medium text-gray-700">Cargo:</label>
-                <select id="cargo" name="cargo" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                    <option value="">Seleccione un cargo</option>
-                    <option value="Jefe de Área">Jefe de Área</option>
-                    <option value="Analista Senior">Analista Senior</option>
-                    <option value="Programador Junior">Programador Junior</option>
-                    <option value="Coordinador">Coordinador</option> <!-- Agregar esta línea -->
-                    <option value="Cargo por Defecto">Cargo por Defecto</option>
-                </select>
-            </div>
+                <!-- DNI -->
+                <div class="mb-4">
+                    <label for="dni" class="block text-sm font-medium text-gray-700">DNI:</label>
+                    <input type="text" id="dni" name="dni" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" placeholder="DNI o Identificación">
+                </div>
 
+                <!-- Cargo -->
+                <div class="mb-4">
+                    <label for="cargo" class="block text-sm font-medium text-gray-700">Cargo:</label>
+                    <select id="cargo" name="cargo" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="">Seleccione un cargo</option>
+                        <option value="Jefe de Área">Jefe de Área</option>
+                        <option value="Analista Senior">Analista Senior</option>
+                        <option value="Programador Junior">Programador Junior</option>
+                        <option value="Coordinador">Coordinador</option>
+                        <option value="Cargo por Defecto">Cargo por Defecto</option>
+                    </select>
+                </div>
 
-            <!-- reCAPTCHA -->
-            <div class="mb-4">
-                <div class="g-recaptcha" data-sitekey="6Ldr2lAqAAAAAEnSz-vlr8CohOrvr018DINCVONX"></div>
-            </div>
+                <!-- reCAPTCHA -->
+                <div class="mb-4">
+                    <div class="g-recaptcha" data-sitekey="6Ldr2lAqAAAAAEnSz-vlr8CohOrvr018DINCVONX"></div>
+                </div>
 
-            <!-- Botón de Registro -->
-            <div class="mt-6">
-                <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Registrar</button>
-            </div>
-        </form>
-    </div>
-</body>
+                <!-- Botón de Registro -->
+                <div class="mt-6">
+                    <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </body>
 </html>
